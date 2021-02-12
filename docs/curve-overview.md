@@ -52,7 +52,7 @@ Curve levies a 0.04% fee on all transactions within a pool.  Half of these fees 
 
 The primary action that can be taken with $CRV is to lock Curve for a time period between 1-4 years.  Locking $CRV entitles holders to receive a portion of trading fees, described below.  Additionally, $CRV provides users with a valueless token called **vote escrowed CRV (veCRV)**.  The amount of veCRV earned by locking $CRV increases linearly with the duration of the lock, ranging from 0.25 veCRV for a 1 year lock to 1.00 veCRV for a 4 year lock.  
 
-![$CRV Locking](/images/3-Curve-Locking.png)
+![$CRV Locking](images/3-Curve-Locking.png)
 Figure 3: $CRV Locking
 
 There are two key purposes of veCRV
