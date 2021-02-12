@@ -113,7 +113,7 @@ All Curve liquidity pools are smart contracts that contain the following public 
 
 ----------------
 
-    remove_liquidity_imbalance(amounts, max_burn_amount)
+``remove_liquidity_imbalance(amounts, max_burn_amount)``
 
 *Withdraw funds disproportionately from the liquidity pool.  Logs a RemoveLiquidity event*
 
