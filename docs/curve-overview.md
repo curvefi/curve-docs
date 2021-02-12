@@ -33,7 +33,7 @@ MetaPools
 Several Curve liquidity pools are referred to as **Metapools**.  Metapools are liquidity pools that trade between one token and another liquidity pool.  The underlying pool in a metapool is often referred to as a **base pool**.  Within a metapool, users can trade directly between tokens in the metapool and the base pool.  
 
 
-![Balanced Metapool](/images/2-Balanced-Metapool.png)
+![Balanced Metapool](/docs/images/2-Balanced-Metapool.png)
 Figure 2: Balanced Metapool
 
 Common base pools include:
