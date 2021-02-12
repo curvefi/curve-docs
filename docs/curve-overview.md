@@ -20,7 +20,7 @@ Users who **"provide liquidity"** (deposit tokens) into Curve liquidity pools ar
 
 Each liquidity pool is considered to be **"balanced"** if it contains a balance of tokens in similar proportion.  If a massive run occurs on one of the coins in the pool, it may be presumed that this coin has increased in value relative to other coins in the pool.  Curve liquidity pools contain a built-in **Automated Market Maker (AMM)** that automatically adjusts the **relative price** of each coin based on the current supply.  Curve is unique among liquidity pools in using a formula that combines a linear invariant and a constant-product invariant that provides more stability.  This formula is described in detail in the [Curve White Paper](https://www.curve.fi/stableswap-paper.pdf).  
 
-![Balanced Liquidity Pool](/images/1-Balanced-Liquidity-Pool.png)
+![Balanced Liquidity Pool](/docs/images/1-Balanced-Liquidity-Pool.png)
 Figure 1: Balanced Liquidity Pool
 
 The smart contract logic within each liquidity pool automatically calculates an **implied price** of the tokens based on the current balance within the pool.  Users withdraw from the pool at the implied price of the tokens.
@@ -52,7 +52,7 @@ Curve levies a 0.04% fee on all transactions within a pool.  Half of these fees 
 
 The primary action that can be taken with $CRV is to lock Curve for a time period between 1-4 years.  Locking $CRV entitles holders to receive a portion of trading fees, described below.  Additionally, $CRV provides users with a valueless token called **vote escrowed CRV (veCRV)**.  The amount of veCRV earned by locking $CRV increases linearly with the duration of the lock, ranging from 0.25 veCRV for a 1 year lock to 1.00 veCRV for a 4 year lock.  
 
-![$CRV Locking](images/3-Curve-Locking.png)
+![$CRV Locking](/docs/images/3-Curve-Locking.png)
 Figure 3: $CRV Locking
 
 There are two key purposes of veCRV
