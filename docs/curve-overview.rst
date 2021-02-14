@@ -1,13 +1,12 @@
 .. _curve-overview:
 
-
 ==================
 Curve: Overview
 ==================
 
 This document provides an overview of Curve aimed at a technical audience.  This document assumes a basic familiarity with the Ethereum blockchain and smart contracts.  We will introduce the major concepts of Curve with a focus on the technical specifications.
 
-If you are not technical we recommend visiting the `Curve Documentation <https://resources.curve.fi/>`_.  Throughout this document, references to fungible tokens that bear value are prefixed with a dollar sign, (ie $USDT)
+Non-technical readers should visit the `Curve Documentation <https://resources.curve.fi/>`_.  Throughout this document, references to fungible tokens that bear value are prefixed with a dollar sign, (ie $USDT)
 
 
 
@@ -18,7 +17,7 @@ Curve maintains several dozen non-custodial **liquidity pools**.  Each liquidity
 
 **Liquidity providers** are users who deposit tokens into a Curve liquidity pool.  Liquidity providers who deposit *n* number of tokens of one denomination are permitted to withdraw this value worth of tokens of any denomination from the pool.
 
-For example,depositing 1000 $USDT into the `Y Pool <https://www.curve.fi/3pool>`_ would permit the user to withdraw 1000 of any of the three denominations the pool accepts, `$USDT <https://etherscan.io/address/0xdAC17F958D2ee523a2206206994597C13D831ec7>`_, `$USDC <https://etherscan.io/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48>`_, and `$DAI <https://etherscan.io/address/0x6B175474E89094C44Da98b954EedeAC495271d0F>`_.  The actual amount may be slightly less than 1000 due to price discrepancies and fees, discussed later.
+For example, depositing 1000 $USDT into the `Y Pool <https://www.curve.fi/3pool>`_ would permit the user to withdraw 1000 of any of the three denominations the pool accepts, `$USDT <https://etherscan.io/address/0xdAC17F958D2ee523a2206206994597C13D831ec7>`_, `$USDC <https://etherscan.io/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48>`_, and `$DAI <https://etherscan.io/address/0x6B175474E89094C44Da98b954EedeAC495271d0F>`_.  The actual amount may be slightly less than 1000 due to price discrepancies and fees, discussed later.
 
 Each liquidity pool is considered to be **"balanced"** if it contains a balance of tokens in similar proportion.  For a balanced pool, the exchange rate among tokens will be 1:1.
 
@@ -37,7 +36,7 @@ Curve liquidity pools serve as a **Automated Market Maker (AMM)**.   When the po
 
 Curve is unique among liquidity pools in that its AMM uses a formula that combines a linear invariant and a constant-product invariant that provides more stability when the peg is close to 1:1, but adjusts asymptotically at extreme price fluctuations.  If you are interested in learning more on this subject, consult the `Curve White Paper <https://www.curve.fi/stableswap-paper.pdf>`_.
 
-A listing of all active pools is maintained in the registry.  The full technical details of the registry are `described here <registry-overview.rst>`_.
+A listing of all active pools is maintained in the registry.  The full technical details of the registry are :ref:`described here <overview>`.  A list of current pools :ref:`exists here<addresses-overview>`.
 
 
 Metapools
@@ -56,6 +55,7 @@ Popular base pools include:
 - `3Pool (dollar) <https://curve.fi/3pool>`_: Contains `$DAI <https://etherscan.io/address/0x6B175474E89094C44Da98b954EedeAC495271d0F>`_, `$USDC <https://etherscan.io/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48>`_, and `$USDT <https://etherscan.io/address/0xdAC17F958D2ee523a2206206994597C13D831ec7>`_
 - `sBTC (bitcoin) <https://curve.fi/sbtc>`_: Contains `$renBTC <https://etherscan.io/address/0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D>`_, `$wBTC <https://etherscan.io/address/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599>`_, and `$sBTC <https://etherscan.io/address/0xfE18be6b3Bd88A2D2A7f928d00292E7a9963CfC6>`_
 
+For details on permissionless deployment of metapools, :ref:`visit here <factory-overview>`.
 
 $CRV, veCRV and Fee Distribution
 ==========================================
@@ -82,121 +82,105 @@ veCRV also has utility on the Curve `governance forum <https://gov.curve.fi>`_. 
 
 Cross Asset Swaps
 =====================
-In 2021, Curve introduced the capability to swap between two different assets.  The feature is [documented here](/cross-asset-swaps.rst).
+In 2021, Curve introduced the capability to swap between two different assets.  The feature is :ref:`documented here <cross-asset-swaps>`.
 
 
-Public Functions
-=====================
-All Curve liquidity pools are smart contracts that contain the following public functions:
+Mutative Functions
+====================
+All Curve liquidity pools are smart contracts that contain the following standard public functions:
 
-----------------
+.. py:function:: add_liquidity(amounts: uint256[n], min_mint_amount: uint256)
 
-**Mutative Functions**
+Deposits funds into the liquidity pool
 
-----------------
+- ``amounts``: List of amounts of tokens to deposit (n: list size == number of denominations in pool)
+- ``min_mint_amount``: Minimum acceptable LP tokens to mint or revert, to protect against slippage
 
-``add_liquidity(amount, min_mint_amount)``
+.. py:function:: remove_liquidity(_amount: uint256, min_amounts: uint256[n])
 
-*Deposits funds into the liquidity pool*
+Withdraw funds proportionally from the liquidity pool.  Logs a ``RemoveLiquidity`` event
 
-- amounts *uint256[n]*: Amount of tokens (n == number of denominations in pool)
-- min_mint_amount *uint256*: Minimum acceptable mint to protect against slippage
+- ``_amount``: Amount of tokens
+- ``min_amounts``: Revert if less than acceptable amount, to protect against slippage
 
-----------------
+.. py:function:: remove_liquidity_imbalance(amounts: uint256[n], max_burn_amount: uint256)
 
-``remove_liquidity(_amount, min_amounts)``
+Withdraw funds disproportionately from the liquidity pool.  Logs a ``RemoveLiquidityImbalance`` event
 
-*Withdraw funds proportionally from the liquidity pool.  Logs a RemoveLiquidity event*
+- ``amounts``: Balances to withdraw from each denomination
+- ``max_burn_amount``: Revert if token amount is greater than this value, to protect against slippage
 
-- _amount *uint256*: Amount of tokens
-- min_amounts *uint256[n]*: Revert if less than acceptable amount, to protect against slippage
+.. py:function:: remove_liquidity_one_coin(_token_amount: uint256, i: uint256, min_amount: uint256)
 
-----------------
+Withdraw ``_token_amount`` liquidity in the form of coin ``i``.  Logs a ``RemoveLiquidityOne`` event
 
-``remove_liquidity_imbalance(amounts, max_burn_amount)``
+- ``_token_amount``: Amount of liquidity to remove
+- ``i``: Index of token to withdraw
+- ``min_amount``: Revert token amount is less than this value, to protect against slippage
 
-*Withdraw funds disproportionately from the liquidity pool.  Logs a RemoveLiquidity event*
+.. py:function:: exchange(i: uint256, j: uint256, dx: uint256, min_dy: uint256)
 
-- amounts *uint256[n]*: Balances to withdraw from each denomination
-- max_burn_amount *uint256*: Revert if token amount is greater than this value, to protect against slippage
+Exchange ``dx`` number of ``i`` denomination tokens for ``j`` denomination tokens without providing liquidity.  Logs a ``TokenExchange`` event
 
-----------------
+- ``i``: Index of first coin
+- ``j``: Index of second coin
+- ``dx``: Amount of coins to exchange
+- ``min_dy``: Revert if transaction is less than this value
 
-``remove_liquidity_one_coin(_token_amount, i, min_amount)``
+Non-Mutative Views
+====================
 
-*Withdraw _token_amount liquidity in the form of coin i.  Logs a RemoveLiquidityOne event*
+.. py:function:: calc_token_amount(amounts uint256[n], is_deposit: bool) -> uint256
 
-- _token_amount *uint256*: Amount of liquidity to remove
-- i *uint256*: Index of coin to withdraw
-- min_amount *uint256*: Revert token amount is less than this value, to protect against slippage
+Simple method for calculating change in token supply on deposit or withdrawal.  Does not consider fees, so not useful for precise calculations.
 
-----------------
+- ``amounts``: Number of coins deposited or withdrawn
+- ``is_deposit``: True if deposit, False if withdrawal
+- returns: Calculated token amount
 
-``exchange(i, j, dx, min_dy)``
+    .. code-block:: python
 
-*Exchange dx number of i coins for j coins without providing liquidity.  Logs a TokenExchange event*
+        >>> pool.calc_token_amount([10000000,20000000], 1)
+        29930953
 
-- i *uint256*: Index of first coin
-- j *uint256*: Index of second coin
-- dx *uint256*: Amount of coins to exchange
-- min_dy *uint256*: Revert if transaction is less than this value
+.. py:function:: get_virtual_price() -> uint256
 
-----------------
+Returns portfolio virtual price (for calculating profit)
 
-**Non-Mutatative Views**
+- returns: Price, scaled by 1e18
 
-----------------
+.. py:function:: get_dy(i: uint256, j: uint256, dx: uint256) -> uint256
 
-``calc_token_amount(amounts, deposit)``
+Returns the number of j coins received for exchanging dx number of i coins in c-units
 
-*Simple method for calculating change in token supply on deposit or withdrawal.  Does not consider fees, so not useful for precise calculations.*
-
-- amounts *uint256[n]*: Number of coins deposited or withdrawn
-- deposit *bool*: True if deposit, False if withdrawal
-- returns *uint256*: Calculated token amount
-
-----------------
-
-``get_virtual_price()``
-
-*Returns portfolio virtual price (for calculating profit)*
-
-- returns *uint256*: Price, scaled by 1e18
-
-----------------
-
-``get_dy(i, j, dx)``
-
-*Returns the number of j coins received for exchanging dx number of i coins in c-units*
-
-- i *uint256*: index of first coin
-- j *uint256*: index of second coin
-- dx *uint256*: amount of coins to exchange
+- ``i``: index of first coin
+- ``j``: index of second coin
+- ``dx``: amount of coins to exchange
 - returns: number of coins received (after fee)
 
-----------------
+        >>> pool.get_dy(0, 1, 10000000)
+        9926352
 
-``get_dy_underlying(i, j, dx)``
 
-*Returns the number of j coins received for exchanging dx number of i coins in underlying units*
+.. py:function:: get_dy_underlying(i: uint256, j: uint256, dx: uint256) -> uint256
 
-- i *uint256*: index of first coin
-- j *uint256*: index of second coin
-- dx *uint256*: amount of coins to exchange
+*(If applicable)* Returns the number of j coins received for exchanging dx number of i coins in underlying units
+
+- ``i``: index of first coin
+- ``j``: index of second coin
+- ``dx``: amount of coins to exchange
 - returns: number of coins received (after fee)
-
-
 
 Owner Functions
 =====================
 The following functions exist only for the deployer of the contract.  They are not documented in full detail here, but provided for further understanding of the capabilities reserved for pool admins.
 
-- **ramp_A:** Create a linear ramp to adjust the **"Amplification" parameter (A)**, as described in the white paper.  Logs a RampA event.
-- **stop_ramp_A:** End an active ramp and sets the value of A at the current value.  Logs a StopRampA event.
-- **commit_new_fee:** Set a new admin fee to take effect after a future time for the pool.  Logs a CommitNewFee event.
-- **apply_new_fee:** Immediately begin the new fee.  Logs a NewFee event.
-- **commit_transfer_ownership:** Assign a new admin to take over the contract at a future date.  Logs a CommitNewAdmin event.
-- **apply_transfer_ownership:** Execute the transfer of ownership of the contract.  Logs a NewAdmin event.
+- **ramp_A:** Create a linear ramp to adjust the **"Amplification" parameter (A)**, as described in the white paper.  Logs a ``RampA`` event.
+- **stop_ramp_A:** End an active ramp and sets the value of A at the current value.  Logs a ``StopRampA`` event.
+- **commit_new_fee:** Set a new admin fee to take effect after a future time for the pool.  Logs a ``CommitNewFee`` event.
+- **apply_new_fee:** Immediately begin the new fee.  Logs a ``NewFee`` event.
+- **commit_transfer_ownership:** Assign a new admin to take over the contract at a future date.  Logs a ``CommitNewAdmin`` event.
+- **apply_transfer_ownership:** Execute the transfer of ownership of the contract.  Logs a ``NewAdmin`` event.
 - **revert_new_parameters:** Revert a new fee
 - **revert_transfer_ownership:** Revert an ownership transfer
 - **withdraw_admin_fees:** Transfer admin fees to the admin
