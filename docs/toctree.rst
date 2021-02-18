@@ -6,6 +6,7 @@ Curve
     :maxdepth: 2
 
     Introduction <index.rst>
+    Curve Overview <curve-overview.rst>
 
 .. toctree::
     :maxdepth: 2
